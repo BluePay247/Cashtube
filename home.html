@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+  <title>hello</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;900&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(270deg, #00ff00, #0000ff, #ffff00, #ff00ff);
+      background-size: 800% 800%;
+      animation: gradientBG 15s ease infinite;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .top {
+      width: 100%;
+      background: none;
+    }
+
+    .top img {
+      width: 80px;
+      padding-left: 12px;
+      padding-top: 40px;
+    }
+
+    .top p {
+      position: relative;
+      top: -56px;
+      padding-left: 96px;
+      font-size: 20px;
+    }
+
+    .money {
+      width: 95%;
+      height: 150px;
+      margin: 0 auto;
+      background: green;
+      border-radius: 8px;
+      color: white;
+      padding-top: 10px;
+    }
+
+    .money p,
+    h2 {
+      padding-left: 19px;
+    }
+
+    .form {
+      width: 95%;
+      margin: 0 auto;
+      border-radius: 10px;
+      border: 1px solid green;
+      background: #ffffff;
+      padding: 15px;
+    }
+
+    .input-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-container input {
+      border: none;
+      border-bottom: 2px solid #000;
+      background: white;
+      outline: none;
+      padding: 5px 0;
+      font-size: 16px;
+      width: 90%;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .input-container input:focus {
+      border-bottom-color: green;
+    }
+
+    .input-container label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      pointer-events: none;
+      transition: 0.2s ease all;
+      font-size: 16px;
+      padding-left: 17px;
+    }
+
+    .input-container input:focus ~ label,
+    .input-container input:valid ~ label {
+      transform: translateY(-29px);
+      font-size: 14px;
+      color: green;
+    }
+
+    button {
+      width: 40%;
+      height: 40px;
+      margin: 0 auto;
+      display: block;
+      background: green;
+      font-size: 22px;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+
+    g {
+      color: red;
+    }
+
+    iframe {
+      margin: 0 auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top">
+    <img src="img/top.png" alt="Logo" />
+    <p><b>Hello, Valid User</b></p>
+    <p>Good Day.</p>
+  </div>
+
+  <br />
+  <div class="money">
+    <p>Available Balance</p>
+    <h2>₦ <span id="number">5500</span></h2>
+  </div>
+
+  <br /><br />
+  <center>
+    <h1>Watch video to earn money</h1>
+    <iframe width="95%" height="315" src="video2.mp4"
+      title="Watch to Earn" frameborder="0" allow="autoplay; encrypted-media;" allowfullscreen></iframe>
+    <br><br>
+    <h4>The more videos you watch, the more your <g>available balance</g> increases</h4>
+  </center>
+
+  <br /><br />
+  <div class="form">
+    <form id="fundForm">
+      <div class="input-container">
+        <input type="number" id="palmpayNumber" name="palmpayNumber" required />
+        <label for="palmpayNumber">Account Number</label>
+      </div>
+      <div class="input-container">
+        <input type="text" id="palmpayName" name="palmpayName" required />
+        <label for="palmpayName">Account Name</label>
+      </div>
+      <div class="input-container">
+        <input type="text" id="palmpayCome" name="palmpayCome" required />
+        <label for="palmpayCome">Bank Name</label>
+      </div>
+      <div class="input-container">
+        <input type="number" id="amount" name="amount" required />
+        <label for="amount">Amount</label>
+      </div>
+      <br />
+      <button type="submit">Withdraw</button>
+    </form>
+  </div>
+
+  <br /><br /><br />
+
+  <script>
+    // Load available balance
+    const numberElement = document.getElementById('number');
+    let number = localStorage.getItem('number');
+
+    if (!number) {
+      number = 5500;
+    } else {
+      number = parseInt(number);
+    }
+
+    numberElement.textContent = number.toLocaleString('en-US');
+
+    // Update balance every few seconds (fake increase)
+    function updateNumber() {
+      number += 164;
+      numberElement.textContent = number.toLocaleString('en-US');
+      localStorage.setItem('number', number);
+    }
+
+    setInterval(updateNumber, 2000);
+
+    // Withdraw form handler
+    document.getElementById('fundForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const amount = parseInt(document.getElementById('amount').value);
+
+      if (amount > number) {
+        alert("You cannot withdraw more than your available balance!");
+        return;
+      }
+
+      // Deduct amount
+      number -= amount;
+      numberElement.textContent = number.toLocaleString('en-US');
+      localStorage.setItem('number', number);
+
+      // Store other form values (optional)
+      localStorage.setItem('palmpayNumber', document.getElementById('palmpayNumber').value);
+      localStorage.setItem('palmpayName', document.getElementById('palmpayName').value);
+      localStorage.setItem('palmpayCome', document.getElementById('palmpayCome').value);
+      localStorage.setItem('amount', amount);
+
+      // Go to next page
+      window.location.href = 'next-page.html';
+    });
+  </script>
+</body>
+      </html>
